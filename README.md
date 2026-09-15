@@ -1,210 +1,258 @@
-# Autonomous Lead Enrichment Agent
+# SoftwareBrio AI Agent
 
-A Python-based autonomous web intelligence pipeline that crawls public company websites, extracts clean website content, and uses an LLM to generate structured company intelligence.
+An AI-powered company intelligence agent that crawls public company websites, extracts relevant business information, and uses an LLM to generate structured company intelligence.
 
-This project was developed as a practical take-home assignment for the **AI Engineer Intern** role at SoftwareBrio.
-
----
-
-## Overview
-
-The Autonomous Lead Enrichment Agent accepts one or more company domains as input and automatically:
-
-1. Opens the company homepage using a headless browser.
-2. Discovers relevant internal pages such as About, Company, Contact, Sales, Careers, Pricing, and similar pages.
-3. Handles JavaScript-rendered website content using Playwright.
-4. Collects the content from relevant pages.
-5. Preprocesses the content to remove unnecessary HTML and navigation noise.
-6. Extracts public emails and LinkedIn URLs.
-7. Sends cleaned website content to an LLM.
-8. Extracts structured company intelligence using a strict JSON schema.
-9. Calculates an evidence-based confidence score.
-10. Tracks LLM token usage, latency, and estimated API cost.
-11. Handles failures and retries without stopping the complete pipeline.
-12. Saves the final results to `output/output.json`.
+The pipeline is designed for automated lead research and prospecting by combining web crawling, content extraction, LLM-based structured extraction, confidence scoring, error handling, and API usage tracking.
 
 ---
 
 ## Features
 
-- Automated website browsing using Playwright
-- JavaScript-rendered content handling
-- Homepage loading
-- Relevant internal URL discovery
-- Relevant subpage prioritization
-- Multi-page content collection
-- HTML/DOM preprocessing
-- Removal of scripts, CSS, SVGs, and navigation boilerplate
-- Public email extraction
-- LinkedIn URL discovery
-- LLM-powered company intelligence extraction
-- Strict structured JSON output
-- Pydantic schema validation
-- Evidence-based confidence scoring
-- Retry handling for LLM failures
-- Request-too-large handling
-- Rate-limit handling
-- Graceful error handling
-- Per-domain processing
-- LLM token usage tracking
-- LLM latency tracking
-- Estimated API cost tracking
-- Automated pytest test suite
+- Automated website crawling using Playwright
+- Discovers relevant internal company pages
+- Extracts and cleans website content before sending it to the LLM
+- Extracts company overview
+- Identifies target audience / Ideal Customer Profile
+- Extracts publicly available contact email addresses
+- Extracts leadership and team information when explicitly available
+- Extracts LinkedIn profile URLs when explicitly associated with people
+- Uses structured LLM output with JSON schema validation
+- Confidence scoring based on evidence quality
+- Retry handling for LLM failures and rate limits
+- Context reduction for request-too-large errors
+- Continues processing even if one company fails
+- Tracks LLM token usage
+- Tracks LLM latency
+- Estimates API cost per domain
+- Saves structured results to JSON
+- Includes automated pytest tests
+
+---
+
+## Extracted Information
+
+For every processed company, the pipeline extracts:
+
+- Company overview
+- Target audience / Ideal Customer Profile
+- Public contact email addresses
+- Leadership / team members
+- Leadership roles
+- LinkedIn URLs when explicitly available
+- Data confidence score
+- Pages visited
+- Errors encountered during processing
+- LLM model
+- Prompt token usage
+- Completion token usage
+- Total token usage
+- LLM latency
+- Estimated API cost
 
 ---
 
 ## Architecture
 
 ```text
-                    Company Domains
-                           |
-                           v
-                +----------------------+
-                |   Browser Crawler    |
-                |      Playwright      |
-                +----------+-----------+
-                           |
-                           v
-                +----------------------+
-                | Relevant URL         |
-                | Discovery            |
-                +----------+-----------+
-                           |
-                           v
-                +----------------------+
-                | Content Collection   |
-                | Homepage + Subpages  |
-                +----------+-----------+
-                           |
-                           v
-                +----------------------+
-                | Content Preprocessor |
-                | Clean Text / DOM     |
-                | Remove HTML Noise    |
-                +----------+-----------+
-                           |
-                           v
-                +----------------------+
-                | LLM Extraction       |
-                | Groq API             |
-                | GPT OSS 20B          |
-                +----------+-----------+
-                           |
-                           v
-                +----------------------+
-                | Structured Validation|
-                | Pydantic / JSON      |
-                +----------+-----------+
-                           |
-                           v
-                +----------------------+
-                | Confidence + Usage   |
-                | Token + Cost Tracking|
-                +----------+-----------+
-                           |
-                           v
-                +----------------------+
-                | output/output.json   |
-                +----------------------+
+                    ┌──────────────────────┐
+                    │      User Input      │
+                    │  Company Domain(s)   │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │       Main.py        │
+                    │  Pipeline Controller │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │      Browser         │
+                    │     Playwright       │
+                    │                      │
+                    │ • Open website       │
+                    │ • Discover URLs      │
+                    │ • Visit pages        │
+                    │ • Collect content    │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │     Extractor        │
+                    │                      │
+                    │ • Clean HTML         │
+                    │ • Remove JS/CSS      │
+                    │ • Extract emails     │
+                    │ • Extract LinkedIn   │
+                    │ • Prepare context    │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │       CompanyLLM     │
+                    │                      │
+                    │    Groq API + LLM    │
+                    │ openai/gpt-oss-20b   │
+                    │                      │
+                    │ • Structured output  │
+                    │ • Retry handling     │
+                    │ • Token tracking     │
+                    │ • Cost estimation   │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │      Pydantic        │
+                    │       Schemas        │
+                    │                      │
+                    │ • Validate output    │
+                    │ • Enforce structure │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │      output.json     │
+                    │                      │
+                    │ Structured company   │
+                    │ intelligence data   │
+                    └──────────────────────┘
+```
 
-Extracted Information
+---
 
-For every processed company, the pipeline extracts:
+## Technologies Used
 
-Company overview
-Target audience / Ideal Customer Profile
-Public contact email addresses
-Leadership / team members
-Leadership roles
-LinkedIn profile URLs when explicitly available
-Data confidence score
-Pages visited
-Errors encountered during processing
-LLM model
-Prompt token usage
-Completion token usage
-Total token usage
-LLM latency
-Estimated API cost
-Technologies Used
-Python 3.12
-Playwright
-Groq API
-openai/gpt-oss-20b
-Pydantic
-pytest
-python-dotenv
-Project Structure
+- Python 3.12
+- Playwright
+- Groq API
+- `openai/gpt-oss-20b`
+- Pydantic
+- pytest
+- python-dotenv
+
+---
+
+## Project Structure
+
+```text
 softwarebrio-ai-agent/
 │
 ├── app/
 │   ├── __init__.py
+│   ├── agent.py
 │   ├── browser.py
+│   ├── config.py
 │   ├── extractor.py
 │   ├── llm.py
 │   ├── schemas.py
-│   └── config.py
+│   └── utils.py
 │
 ├── tests/
+│   ├── __init__.py
 │   ├── test_browser.py
 │   ├── test_extractor.py
 │   ├── test_llm_schema.py
 │   └── test_schemas.py
 │
 ├── output/
+│   ├── .gitkeep
 │   └── output.json
 │
 ├── main.py
+├── run_llm_check.py
+├── test_browser_run.py
+├── test_extraction_run.py
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
 └── README.md
-Setup
-1. Clone the Repository
+```
+
+---
+
+## Setup
+
+### 1. Clone the repository
+
+```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd softwarebrio-ai-agent
-2. Create a Virtual Environment
+```
 
-For Windows:
+### 2. Create a virtual environment
 
+#### Windows
+
+```powershell
 python -m venv .venv
 .venv\Scripts\activate
-3. Install Dependencies
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
-4. Install Playwright Browser
+```
+
+### 4. Install Playwright browser
+
+```bash
 playwright install chromium
-5. Configure Environment Variables
+```
 
-Create a .env file in the project root:
+### 5. Configure environment variables
 
+Create a `.env` file in the project root:
+
+```env
 GROQ_API_KEY=your_groq_api_key_here
+```
 
-The API key is loaded through environment variables.
+Do not commit the `.env` file to GitHub.
 
-Do not commit .env or any API key to GitHub.
+---
 
-Running the Agent
-Run the Default Assignment Domains
+## Running the Agent
+
+### Run the default assignment domains
+
+```bash
 python main.py
+```
 
 The default test domains are:
 
+```text
 postman.com
 supabase.com
 vapi.ai
-Run a Specific Domain
+```
+
+### Run a specific domain
+
+```bash
 python main.py supabase.com
-Run Multiple Custom Domains
+```
+
+### Run multiple custom domains
+
+```bash
 python main.py example.com anothercompany.com
-Output
+```
 
-The generated structured output is written to:
+---
 
+## Output
+
+The generated result is written to:
+
+```text
 output/output.json
+```
 
-The output contains a summary of successful and failed domains along with structured company intelligence.
+Example structure:
 
-Example Output Structure
+```json
 {
   "run_summary": {
     "total_domains": 3,
@@ -234,109 +282,112 @@ Example Output Structure
     }
   ]
 }
-Token Optimization
+```
 
-The pipeline does not send entire raw HTML pages directly to the LLM.
+---
 
-Before LLM processing, collected website content is cleaned and preprocessed.
+## Token Optimization
 
-The preprocessing stage removes unnecessary content such as:
+The pipeline does not send raw HTML directly to the LLM.
 
-JavaScript
-CSS
-SVG elements
-Navigation boilerplate
-Other irrelevant DOM content
+Before extraction, website content is processed to remove unnecessary information such as:
 
-Only relevant cleaned textual content is passed to the LLM.
+- JavaScript
+- CSS
+- SVG elements
+- Navigation boilerplate
+- Other irrelevant DOM content
 
-This reduces unnecessary token usage and helps improve processing efficiency and latency.
+Only cleaned textual content from relevant pages is provided to the LLM.
 
-Structured LLM Extraction
+This reduces unnecessary token usage and helps improve extraction latency.
 
-The LLM receives cleaned website content and extracts company intelligence using a strict structured JSON schema.
+---
+
+## Structured LLM Extraction
+
+The LLM output is constrained using a structured JSON schema.
 
 The extraction schema contains:
 
+```text
 company_overview
 target_audience
 contact_points
 leadership
 data_confidence_score
+```
 
-Each leadership entry contains:
+Leadership entries contain:
 
+```text
 name
 role
 linkedin_url
+```
 
-The implementation validates the structured response before producing the final company result.
+The implementation validates the generated structured data before producing the final company result.
 
-Extraction Rules
+The system also enforces strict extraction rules to prevent hallucination. Information is only extracted when supported by the supplied website content.
 
-The LLM is instructed to:
+---
 
-Use only information present in the supplied website content.
-Never invent company facts.
-Never invent people's names.
-Never invent job titles.
-Never manufacture LinkedIn URLs.
-Never manufacture contact emails.
-Only include leadership members when a name and role are explicitly supported.
-Include LinkedIn URLs only when explicitly associated with the corresponding person.
-Return empty lists when information is unavailable.
-Confidence Scoring
-
-The pipeline produces a confidence score between 0.0 and 1.0.
-
-The score considers:
-
-Quality of collected evidence
-Completeness of extracted information
-Directness of the supporting website content
-
-The system avoids artificially increasing confidence simply because more pages were collected.
-
-Missing information is not treated as a reason to invent data.
-
-Legitimately unavailable public information, such as leadership details, only reduces confidence moderately when other requested fields have strong supporting evidence.
-
-Resilience and Error Handling
+## Resilience and Error Handling
 
 The pipeline is designed to continue processing even when individual pages or companies encounter problems.
 
-Common conditions handled include:
+Examples of handled conditions include:
 
-HTTP errors
-Missing pages
-Navigation failures
-Page timeouts
-Missing website elements
-LLM API failures
-Request-too-large errors
-Rate limits
-LLM Retry Handling
+- HTTP errors
+- Missing pages
+- Navigation failures
+- Page timeouts
+- Missing website elements
+- LLM API failures
+- Request-too-large errors
+- Rate limits
 
-LLM extraction uses retry logic.
-
-When a request exceeds the available token limit, the pipeline reduces the LLM context before retrying.
-
-This allows the system to recover from oversized requests while preserving the core extraction workflow.
+LLM extraction uses retry logic with progressively reduced context when the request exceeds the available token limit.
 
 A failure for one company does not stop processing of the remaining domains.
 
-Cost Tracking
+---
 
-The pipeline tracks LLM usage for each processed domain.
+## Confidence Scoring
 
-The recorded metrics include:
+The extraction process generates a confidence score between `0.0` and `1.0`.
 
-Prompt tokens
-Completion tokens
-Total tokens
-LLM latency
-Estimated API cost
-Example
+The score considers:
+
+- Quality of the collected evidence
+- Completeness of the extracted fields
+- Directness of the supporting website content
+
+The LLM is instructed not to invent information simply to increase the confidence score.
+
+Missing information is not automatically treated as a major failure. For example, if leadership information is not publicly available in the collected content, the system can still assign a reasonable confidence score when the other company information is strongly supported.
+
+Example:
+
+```json
+"data_confidence_score": 0.90
+```
+
+---
+
+## Cost Tracking
+
+The pipeline records:
+
+- Prompt tokens
+- Completion tokens
+- Total tokens
+- LLM latency
+- Estimated API cost
+
+Example:
+
+```json
 "llm_usage": {
   "model": "openai/gpt-oss-20b",
   "latency_seconds": 3.945,
@@ -345,121 +396,156 @@ Example
   "total_tokens": 5617,
   "estimated_cost_usd": 0.00055695
 }
+```
 
-The estimated cost is calculated using the token usage and configured model pricing.
+The estimated cost is calculated from the recorded token usage and the configured model pricing.
 
-Testing
+---
 
-The project includes automated tests covering:
+## Testing
 
-Browser functionality
-Website content extraction
-LLM structured schema validation
-Company schema validation
+Run the complete automated test suite:
 
-Run the complete test suite with:
-
+```bash
 pytest
-Final Test Result
+```
+
+The test suite covers:
+
+- Browser functionality
+- Content extraction
+- LLM schema validation
+- Company schema validation
+
+Final test result:
+
+```text
 16 passed
-Assignment Test Run
+```
 
-The agent was tested against the three required domains:
+---
 
+## Assignment Test Run
+
+The agent was tested against the three assignment domains:
+
+```text
 postman.com
 supabase.com
 vapi.ai
-Final Run
+```
 
-All three domains completed successfully.
+All three domains completed successfully in the final test run.
 
-[1/3] Starting postman.com
-✓ Structured LLM extraction complete
-
-[2/3] Starting supabase.com
-✓ Structured LLM extraction complete
-
-[3/3] Starting vapi.ai
-✓ Structured LLM extraction complete
-
-RUN COMPLETE
-Output saved to: output\output.json
+```text
 Companies processed: 3
+```
 
-The generated structured output is available at:
+The resulting structured data is available in:
 
+```text
 output/output.json
-Sample Extraction Results
+```
 
-The final output contains structured company intelligence for all three assignment domains.
+---
 
-The pipeline records:
+## Example Execution
 
-Company overview
-Target audience
-Public contact points
-Leadership information when explicitly available
-Confidence score
-Pages visited
-Errors
-Token usage
-Latency
-Estimated API cost
+Running:
 
-The exact generated results are provided in:
+```bash
+python main.py
+```
 
-output/output.json
-Security
+produces output similar to:
+
+```text
+[1/3] Starting postman.com
+
+======================================================================
+PROCESSING: postman.com
+======================================================================
+  → Opening https://postman.com/
+  ✓ Homepage loaded (HTTP 200)
+  ✓ Discovered relevant internal URLs
+  ✓ Collected relevant pages
+
+  → Preprocessing collected pages...
+  ✓ Preprocessed pages
+  ✓ Found public email(s)
+  ✓ Found LinkedIn URL(s)
+  ✓ LLM context prepared
+
+  → LLM extraction (attempt 1/3)
+  ✓ Structured LLM extraction complete
+  ✓ Evidence confidence: 1.00
+  ✓ Final confidence: 0.90
+```
+
+The same pipeline is applied to the remaining domains.
+
+---
+
+## Security
 
 API credentials are loaded through environment variables.
 
-The following files should never be committed:
+Never commit:
 
+```text
 .env
+```
+
+or any API key to the repository.
+
+The repository should contain:
+
+```text
+.env.example
+```
+
+with placeholder values only.
+
+The `.gitignore` file excludes sensitive and unnecessary local files such as:
+
+```text
 .venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/
+```
 
-The repository contains .env.example with placeholder configuration:
+---
 
-GROQ_API_KEY=your_groq_api_key_here
+## Manual Operations Confirmation
 
-No API keys should be stored directly in the source code.
-
-Manual Operations Confirmation
-
-Yes. I am 100% comfortable spending roughly 40% of my working hours on manual lead prospecting, email discovery, and account handling alongside my AI engineering tasks.
+I am comfortable spending approximately 40% of my working hours on manual lead prospecting, email discovery, and account handling alongside my AI engineering responsibilities.
 
 I understand that the internship combines manual prospecting and operational execution with AI agent engineering, and I am comfortable with this hybrid work structure.
 
-Author
+---
 
-Bhargavi Vanipenta
+## Future Improvements
 
-LinkedIn: <YOUR_LINKEDIN_URL>
+Potential future improvements include:
 
+- Better leadership page discovery
+- More advanced relevance scoring for internal URLs
+- Parallel page crawling
+- Additional LLM providers
+- More comprehensive unit and integration tests
+- Persistent crawl caching
+- Improved cost reporting across multiple domains
+- More advanced evidence-based confidence scoring
+- Support for additional structured company intelligence fields
 
-### After pasting it
+---
 
-Only change these two things:
+## Author
 
-**1. GitHub placeholder**
+**Bhargavi Vanipenta**
 
-```text
-<https://github.com/Bhargavi-1504>
+LinkedIn: https://www.linkedin.com/in/bhargavi-vanipenta-9a9717271
 
-2. LinkedIn placeholder
-
-<https://www.linkedin.com/in/bhargavi-vanipenta-9a9717271/>
-
-Everything else can stay as above.
-
-Then save:
-
-Ctrl + S
-
-and run:
-
-pytest
-
-You should still get:
-
-16 passed
