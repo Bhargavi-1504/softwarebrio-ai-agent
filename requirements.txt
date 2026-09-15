@@ -1,0 +1,10 @@
+playwright
+beautifulsoup4
+pydantic
+pydantic-settings
+python-dotenv
+groq
+httpx
+tenacity
+tiktoken
+pytest

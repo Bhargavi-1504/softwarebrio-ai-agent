@@ -1,0 +1,114 @@
+{
+  "run_summary": {
+    "total_domains": 3,
+    "successful_results": 3,
+    "failed_results": 0
+  },
+  "results": [
+    {
+      "company": {
+        "domain": "postman.com",
+        "company_overview": "Postman is an API platform that simplifies the API lifecycle and streamlines collaboration for developers and enterprises. It offers tools for building, testing, managing, and distributing APIs at scale.",
+        "target_audience": "Engineers, developers, and enterprises building and using APIs.",
+        "contact_points": [
+          "help@postman.com",
+          "info-jp@postman.com",
+          "info@postman.com"
+        ],
+        "leadership": [
+          {
+            "name": "Abhinav Asthana",
+            "role": "CEO and co-founder",
+            "linkedin_url": null
+          }
+        ],
+        "data_confidence_score": 0.9,
+        "pages_visited": [
+          "https://postman.com/",
+          "https://www.postman.com/company/about-postman",
+          "https://www.postman.com/company/contact-sales",
+          "https://www.postman.com/company/contact-us",
+          "https://www.postman.com/company/careers",
+          "https://www.postman.com/company/press-media"
+        ],
+        "errors": []
+      },
+      "llm_usage": {
+        "model": "openai/gpt-oss-20b",
+        "latency_seconds": 2.345,
+        "prompt_tokens": 5128,
+        "completion_tokens": 1285,
+        "total_tokens": 6413,
+        "estimated_cost_usd": 0.0007701
+      }
+    },
+    {
+      "company": {
+        "domain": "supabase.com",
+        "company_overview": "Supabase is an open‑source Postgres development platform that provides a full backend stack—including database, authentication, real‑time, storage, functions, and vector embeddings—to help teams build production‑grade applications quickly. It offers instant APIs, a developer‑friendly dashboard, and enterprise‑grade security features such as SOC 2 and HIPAA compliance.",
+        "target_audience": "Enterprise AI builders, innovation teams, and citizen developers who need a secure, scalable Postgres backend for rapid prototyping and production.",
+        "contact_points": [
+          "abuse@supabase.com",
+          "help-events@supabase.com",
+          "legal@supabase.com",
+          "privacy@supabase.com",
+          "security@supabase.com"
+        ],
+        "leadership": [],
+        "data_confidence_score": 0.7,
+        "pages_visited": [
+          "https://supabase.com/",
+          "https://supabase.com/solutions/innovation-teams",
+          "https://supabase.com/company",
+          "https://supabase.com/contact-us",
+          "https://supabase.com/contact/sales",
+          "https://supabase.com/pricing"
+        ],
+        "errors": []
+      },
+      "llm_usage": {
+        "model": "openai/gpt-oss-20b",
+        "latency_seconds": 16.898,
+        "prompt_tokens": 5317,
+        "completion_tokens": 660,
+        "total_tokens": 5977,
+        "estimated_cost_usd": 0.00059677
+      }
+    },
+    {
+      "company": {
+        "domain": "vapi.ai",
+        "company_overview": "Vapi is a platform that lets developers build, test, and deploy advanced voice AI agents in minutes. It offers enterprise‑ready capabilities, including real‑time monitoring, scalability, and compliance with SOC 2, HIPAA, and PCI.",
+        "target_audience": "Developers and enterprises building conversational voice AI solutions.",
+        "contact_points": [
+          "talent@vapi.ai"
+        ],
+        "leadership": [
+          {
+            "name": "Jason Mitura",
+            "role": "VP of Software Development",
+            "linkedin_url": null
+          }
+        ],
+        "data_confidence_score": 0.9,
+        "pages_visited": [
+          "https://vapi.ai/",
+          "https://vapi.ai/pricing",
+          "https://vapi.ai/customers",
+          "https://vapi.ai/careers",
+          "https://vapi.ai/platform",
+          "https://vapi.ai/community"
+        ],
+        "errors": []
+      },
+      "llm_usage": {
+        "model": "openai/gpt-oss-20b",
+        "latency_seconds": 13.615,
+        "prompt_tokens": 5002,
+        "completion_tokens": 649,
+        "total_tokens": 5651,
+        "estimated_cost_usd": 0.00056985
+      }
+    }
+  ]
+}
