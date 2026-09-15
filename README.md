@@ -175,7 +175,7 @@ softwarebrio-ai-agent/
 ### 1. Clone the repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/Bhargavi-1504/softwarebrio-ai-agent.git
 cd softwarebrio-ai-agent
 ```
 
